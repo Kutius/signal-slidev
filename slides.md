@@ -17,6 +17,7 @@ drawings:
 transition: slide-left
 # enable MDC Syntax: https://sli.dev/guide/syntax#mdc-syntax
 mdc: true
+lineNumbers: true
 fonts:
   mono: Input Mono
 ---
@@ -68,16 +69,152 @@ name: Solid Homepage
 ---
 
 ---
-name: Reactivity
+
+# 状态更新机制
+
+仅触发一次渲染函数
+
+一段 `JSX` 代码中，有多个变量被调用时，不会重新执行整段 `JSX` 代码，而是仅更新变量部分
+
+<v-click>
+
+````md magic-move
+```jsx
+const App = ({ value1, value2}) => (
+  <div>
+    value1: {console.log("value1", value1)}
+    value2: {console.log("value2", value2)}
+  </div>
+)
+```
+
+```jsx {*|4-5}
+// 当 value1 更新时，只会触发 value1 的更新
+const App = ({ value1, value2}) => (
+  <div>
+    {/* Print: value1 */}
+    value1: {console.log("value1", value1)}
+    {/* No print */}
+    value2: {console.log("value2", value2)}
+  </div>
+)
+```
+````
+
+</v-click>
+
+<br />
+<br />
+<v-click>
+
+## 为什么 `SolidJS` 可以做到这一点？
+
+</v-click>
+
+---
+layout: fact
 ---
 
-# Reactivity
+# 面向状态驱动
 
-响应式系统介绍
+---
+transition: slide-up
+---
 
-```ts
-import { createSignal } from 'solid-js'
+# 响应式
+
+以 `Signal` 方式的心智去理解
+
+<div class="grid grid-cols-2 gap-4">
+<div>
+<h2>Solid</h2>
+
+````md magic-move
+```jsx
+const [count, setCount] = createSignal(0);
+
+setCount(count() + 1);
 ```
+
+```jsx
+import { createSignal } from "solid-js";
+
+function Counter() {
+  const [count, setCount] = createSignal(0);
+
+  setInterval(() => setCount(count() + 1), 1000);
+
+  return (
+    <div>
+      <p>Count: {count()}</p>
+    </div>
+  );
+}
+```
+
+```jsx
+import { createSignal } from "solid-js";
+
+const [count, setCount] = createSignal(0);
+
+function Counter() {
+  // It still works.
+  setInterval(() => setCount(count() + 1), 1000);
+
+  return (
+    <div>
+      <p>Count: {count()}</p>
+    </div>
+  );
+}
+```
+````
+
+</div>
+<div >
+<h2>React</h2>
+
+```jsx
+const [count, setCount] = useState(0);
+
+setCount(count + 1);
+```
+
+</div>
+</div>
+
+<v-click>
+<br />
+<p text-yellow>纯粹的数据驱动，无论数据在哪定义，都可以建立绑定</p>
+</v-click>
+
+---
+
+# 派生状态追踪
+
+```jsx
+const App = () => {
+  const [count, setCount] = createSignal(0);
+  const doubleCount = () => count() * 2;
+
+  return (
+    <button onClick={() => setCount(prev => prev + 1)}>
+      {doubleCount()}
+    </button>
+  );
+};
+``` 
+
+<br />
+<br />
+<v-clicks>
+
+- `SolidJS` 收集所有用到了 `count()` 的依赖
+- `doubleCount()` 用到了它
+- 渲染函数用到了 `doubleCount()`
+- 完成整条链路的依赖收集
+
+</v-clicks>
 
 ---
 transition: fade-out
@@ -162,7 +299,7 @@ Use code snippets and get the highlighting directly, and even types hover![^1]
 // and errors in markdown code blocks
 // More at https://shiki.style/packages/twoslash
 
-import { computed, ref } from 'solid-js'
+import { computed, ref } from 'vue'
 
 const count = ref(0)
 const doubled = computed(() => count.value * 2)
