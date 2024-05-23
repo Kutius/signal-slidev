@@ -195,6 +195,8 @@ setCount(count + 1);
 # 派生状态追踪
 
 ```jsx twoslash
+import { createSignal } from "solid-js";
+
 const App = () => {
   const [count, setCount] = createSignal(0);
   const doubleCount = () => count() * 2;
@@ -224,7 +226,9 @@ const App = () => {
 
 状态监听
 
-```jsx
+```jsx twoslash
+import { createSignal, createEffect } from "solid-js";
+
 const App = () => {
   const [count, setCount] = createSignal(0);
 
@@ -359,10 +363,10 @@ function Cart({ cart }) {
   </button>
   <div class="text-gray inline-flex gap-4">
     <v-clicks>
-      <span>App rendered</span>
-      <span>Main rendered</span>
-      <span>NavBar rendered</span>
-      <span>Cart rendered</span>
+      <span>"App rendered"</span>
+      <span>"Main rendered"</span>
+      <span>"NavBar rendered"</span>
+      <span>"Cart rendered"</span>
     </v-clicks>
   </div>
 </div>
@@ -370,7 +374,7 @@ function Cart({ cart }) {
   Add to Cart
 </button>
 <div class="text-blue-300 inline-flex gap-4" v-click>
-  <span>Cart rendered</span>
+  <span>"Cart rendered"</span>
 </div>
 
 ---
